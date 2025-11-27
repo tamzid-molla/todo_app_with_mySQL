@@ -1,9 +1,15 @@
-import { AuthForm } from "@/components/AuthForm";
+import { authOptions } from "./api/auth/[...nextauth]/route";
+import { getServerSession } from "next-auth";
 
-export default function Home() {
+export default async function Home() {
+  const session = await getServerSession(authOptions);
+  console.log(session);
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <AuthForm />
+    <div className="min-h-screen">
+      <h1 className="text-2xl font-bold">Hello world!</h1>
+      {
+        JSON.stringify(session)
+      }
     </div>
   );
 }
