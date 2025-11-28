@@ -1,15 +1,26 @@
-import { authOptions } from "./api/auth/[...nextauth]/route";
-import { getServerSession } from "next-auth";
+"use client"
+import UserNotLogin from "@/components/todoComponents/UserNotLogin";
+import AddNewTask from "@/components/todoComponents/AddNewTask";
+import FilterTodo from "@/components/todoComponents/FilterTodo";
+import TodoList from "@/components/todoComponents/TodoList";
+import { useSession } from "next-auth/react";
+import { useState } from "react";
 
-export default async function Home() {
-  const session = await getServerSession(authOptions);
-  console.log(session);
+export default  function Home() {
+const session = useSession()
+  if (!session) {
+    return <UserNotLogin />;
+  }
+
+    const [filter, setFilter] = useState("all");
+  
   return (
     <div className="min-h-screen">
-      <h1 className="text-2xl font-bold">Hello world!</h1>
-      {
-        JSON.stringify(session)
-      }
+      <div className="max-w-4xl mx-auto p-4">
+      <AddNewTask />
+      <FilterTodo filter={filter} setFilter={setFilter}/>
+      <TodoList filter={filter} setFilter={setFilter}/>
+      </div>
     </div>
   );
 }
