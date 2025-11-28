@@ -14,9 +14,9 @@ import { Button } from "../ui/button";
 import axios from "axios";
 
 const TodoList = ({ filter }) => {
+  const [todos, setTodos] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [editText, setEditText] = useState("");
-  const [todos, setTodos] = useState([]);
 
   // ------------------------------
   // FETCH TODOS FROM API

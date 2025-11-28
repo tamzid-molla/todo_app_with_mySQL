@@ -6,7 +6,7 @@ import { Button } from '../ui/button';
 
 const UserNotLogin = () => {
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-md w-full space-y-8">
           <AuthHeader />
           <Card>
@@ -18,7 +18,7 @@ const UserNotLogin = () => {
               <p className="text-gray-600 mb-6">
                 You need to be logged in to manage your tasks. Please log in or register for an account.
               </p>
-              <Link href="/">
+              <Link href="/login">
                 <Button className="w-full">Go to Login Page</Button>
               </Link>
             </CardContent>

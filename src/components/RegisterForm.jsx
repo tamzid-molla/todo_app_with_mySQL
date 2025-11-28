@@ -1,4 +1,4 @@
- "use client";
+"use client";
 import { useState } from "react";
 import { toast, Toaster } from "react-hot-toast";
 import { Button } from "@/components/ui/button";
@@ -6,37 +6,56 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { AuthHeader } from "@/components/AuthHeader";
-import axios from "axios";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const RegisterForm = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
+    const router = useRouter();
 
-
-    const handleSubmit =async (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
+        setError("");
         
         if (password !== confirmPassword) {
-        setError("Passwords do not match");
-        toast.error("Passwords do not match");
-        setLoading(false);
-        return;
+            setError("Passwords do not match");
+            toast.error("Passwords do not match");
+            setLoading(false);
+            return;
         }
         
         try {
-            const res = await axios.post('/api/register', { email, password });
-            toast.success(res.data.message);
+            const response = await fetch('/api/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password }),
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                toast.success(data.message);
+                router.push("/login");
+            } else {
+                setError(data.message);
+                toast.error(data.message || "Registration failed");
+            }
         } catch (error) {
             console.log(error);
-            console.log(error.response?.data?.message || "An error occurred");
-            toast.error(error.response?.data?.message || "An error occurred");
+            setError("An error occurred");
+            toast.error("An error occurred");
         } finally {
             setLoading(false);
         }
     };
+    
     return (
     <>
       <Toaster position="top-right" />
@@ -82,16 +101,19 @@ const RegisterForm = () => {
                     type="password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
                   />
                 </div>
             </CardContent>
             <CardFooter className="flex flex-col gap-4">
               <Button type="submit" className="w-full" disabled={loading}>
                 {loading ? "Processing..." : "Register"}
-              </Button>
+                </Button>
+                <Link href="/login" className="w-full">
               <Button type="button" variant="outline" className="w-full">
               Already have an account? Login
-              </Button>
+                  </Button>
+                  </Link>
             </CardFooter>
           </form>
         </Card>
@@ -99,7 +121,5 @@ const RegisterForm = () => {
     </>
   );
 }
-   
-
 
 export default RegisterForm;

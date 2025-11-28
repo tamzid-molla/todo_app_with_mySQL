@@ -18,8 +18,12 @@ const authOptions = {
     async authorize(credentials, req) {
       // Add logic here to look up the user from the credentials supplied
       const [user] = await db.query("SELECT * FROM users WHERE email = ? ", [credentials.email]);
+      console.log(user , "ser user");
+      console.log("hello");
       const isPasswordCorrect = user[0].password === credentials.password;
+      console.log(isPasswordCorrect);
       if (isPasswordCorrect) {
+        console.log("hello");
         // Any object returned will be saved in `user` property of the JWT
         return user[0]
       } else {

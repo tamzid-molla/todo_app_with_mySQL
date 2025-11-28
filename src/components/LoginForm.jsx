@@ -7,12 +7,16 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { AuthHeader } from "@/components/AuthHeader";
 import axios from "axios";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 
 
 const LoginForm = () => {
      const [email, setEmail] = useState("");
          const [password, setPassword] = useState("");
            const [loading, setLoading] = useState(false);
+  const router = useRouter();
   const [error, setError] = useState("");
   
 
@@ -21,13 +25,25 @@ const LoginForm = () => {
   setLoading(true);
 
   try {
-      const res = await axios.post('/api/login', { email, password });
-      toast.success(res.data.message);
-    setError("");
+    // NextAuth credentials login
+    const res = await signIn("credentials", {
+      redirect: false,
+      email,
+      password,
+    });
+
+    if (res?.error) {
+      setError(res.error);
+      toast.error(res.error);
+    } else {
+      setError("");
+      toast.success("Login successful");
+      router.push("/");
+    }
   } catch (err) {
     console.log(err);
-    setError(err.response?.data?.message || "An error occurred");
-    toast.error(err.response?.data?.message || "An error occurred");
+    setError("An unexpected error occurred");
+    toast.error("An unexpected error occurred");
   } finally {
     setLoading(false);
   }
@@ -80,10 +96,12 @@ const LoginForm = () => {
             <CardFooter className="flex flex-col gap-4">
               <Button type="submit" className="w-full" disabled={loading}>
                 {loading ? "Processing..." : "Login" }
-              </Button>
+                </Button>
+                <Link href="/register" className="w-full">
               <Button type="button" variant="outline" className="w-full">
                 Need an account? Register
-              </Button>
+                  </Button>
+                  </Link>
             </CardFooter>
           </form>
         </Card>

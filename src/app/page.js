@@ -7,12 +7,13 @@ import { useSession } from "next-auth/react";
 import { useState } from "react";
 
 export default  function Home() {
-const session = useSession()
-  if (!session) {
+  const [filter, setFilter] = useState("all");
+  const session = useSession()
+ 
+  if (!session.data) {
     return <UserNotLogin />;
   }
 
-    const [filter, setFilter] = useState("all");
   
   return (
     <div className="min-h-screen">
